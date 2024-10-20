@@ -49,11 +49,6 @@
       args:
         chdir: /tmp/yourrepo
 
-    - name: Push the feature branch to remote
-      command: git push origin "{{ feature_branch }}"
-      args:
-        chdir: /tmp/yourrepo
-
     - name: Install required dependencies
       apt:
         name:
@@ -80,6 +75,11 @@
         name: gh
         state: present
       become: true
+
+    - name: Push the feature branch to remote
+      command: git push origin "{{ feature_branch }}"
+      args:
+        chdir: /tmp/yourrepo
 
     - name: Open a pull request using GitHub CLI
       command: gh pr create --title "{{ pr_title }}" --body "{{ pr_body }}" --base "{{ base_branch }}" --head "{{ feature_branch }}"
