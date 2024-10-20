@@ -49,29 +49,6 @@
       args:
         chdir: /tmp/yourrepo
 
-    - name: Install required dependencies
-      apt:
-        name:
-          - curl
-          - apt-transport-https
-          - ca-certificates
-        state: present
-        update_cache: yes
-
-    - name: Add GitHub CLI GPG key
-      command: >
-        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg |
-        sudo tee /usr/share/keyrings/githubcli-archive-keyring.gpg > /dev/null
-
-    - name: Add GitHub CLI repository
-      apt_repository:
-        repo: "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main"
-
-    - name: Install GitHub CLI
-      apt:
-        name: gh
-        state: present
-
     - name: Push the feature branch to remote
       command: git push origin "{{ feature_branch }}"
       args:
