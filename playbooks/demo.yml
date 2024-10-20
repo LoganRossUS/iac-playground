@@ -9,6 +9,8 @@
     pr_title: "Feature branch with example.txt"
     pr_body: "This pull request adds an example.txt file."
     base_branch: "main"
+    git_user_name: "AWX"
+    git_user_email: "admin@loganross.us"
   
   tasks:
     - name: Clone the repository if not already present
@@ -17,7 +19,16 @@
         dest: /tmp/yourrepo
         version: "{{ base_branch }}"
         force: yes
-    
+  
+    - name: Set Git user name locally
+      command: git config user.name "{{ git_user_name }}"
+      args:
+        chdir: /tmp/yourrepo
+
+    - name: Set Git user email locally
+      command: git config user.email "{{ git_user_email }}"
+      args:
+        chdir: /tmp/yourrepo
     - name: Create a new feature branch
       command: git checkout -b "{{ feature_branch }}"
       args:
