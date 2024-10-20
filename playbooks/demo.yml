@@ -1,0 +1,49 @@
+---
+- name: Create Git feature branch, add file, commit, and open PR
+  hosts: localhost
+  vars:
+    repo_url: "https://github.com/LoganRossUS/iac-playground.git"
+    feature_branch: "feature/example-branch"
+    file_name: "example.txt"
+    commit_message: "Add example.txt file"
+    pr_title: "Feature branch with example.txt"
+    pr_body: "This pull request adds an example.txt file."
+    base_branch: "main"
+  
+  tasks:
+    - name: Clone the repository if not already present
+      git:
+        repo: "{{ repo_url }}"
+        dest: /tmp/yourrepo
+        version: "{{ base_branch }}"
+        force: yes
+    
+    - name: Create a new feature branch
+      command: git checkout -b "{{ feature_branch }}"
+      args:
+        chdir: /tmp/yourrepo
+    
+    - name: Create example.txt file
+      copy:
+        dest: /tmp/yourrepo/example.txt
+        content: "This is an example file."
+
+    - name: Add the new file to the git index
+      command: git add "{{ file_name }}"
+      args:
+        chdir: /tmp/yourrepo
+
+    - name: Commit the changes
+      command: git commit -m "{{ commit_message }}"
+      args:
+        chdir: /tmp/yourrepo
+
+    - name: Push the feature branch to remote
+      command: git push origin "{{ feature_branch }}"
+      args:
+        chdir: /tmp/yourrepo
+
+    - name: Open a pull request using GitHub CLI
+      command: gh pr create --title "{{ pr_title }}" --body "{{ pr_body }}" --base "{{ base_branch }}" --head "{{ feature_branch }}"
+      args:
+        chdir: /tmp/yourrepo
